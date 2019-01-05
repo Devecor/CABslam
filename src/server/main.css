@@ -1,0 +1,81 @@
+.page-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    visibility: hidden;
+    z-index: 102;
+}
+
+#map {
+    margin-left: -15px;
+    overflow: auto;
+}
+
+.location {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.house-wrapper {
+    position: relative;
+}
+
+.house-grid {
+    position: absolute;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    border-style: solid;
+    border-color: #838383;
+    z-index: -1;
+}
+
+.house-row {
+    border-width: 2px 0 0 0;
+}
+
+.house-col {
+    border-width: 0 0 0 2px;
+}
+
+img.indicator, div.indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: .6;
+    pointer-events: none;
+}
+
+#message {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    visibility: hidden;
+}
+
+.controls > .row {
+    padding: 6px 2px;
+    margin-bottom: 0;
+}
+
+.photo-container {    
+    position: relative;
+    overflow: auto;
+}
+
+#selectbox {
+    border: 2px dashed #fcfcfc;
+}
+
+.match-container {
+    position: relative;
+    overflow: auto;
+    width: 100%;
+}

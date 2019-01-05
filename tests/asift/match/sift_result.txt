@@ -1,0 +1,42 @@
+
+
+------------------------------------------------------------
+img1 - IMG_1968.JPG, img2 - IMG_1969.JPG
+img1 - 2000 features, img2 - 2000 features
+img1 - 12038.31 ms, img2 - 12516.09 ms
+45 / 112  inliers/matched
+
+
+------------------------------------------------------------
+img1 - IMG_1968.JPG, img2 - IMG_1970.JPG
+img1 - 2000 features, img2 - 2000 features
+img1 - 12302.14 ms, img2 - 11796.97 ms
+50 / 97  inliers/matched
+
+
+------------------------------------------------------------
+img1 - IMG_1968.JPG, img2 - IMG_1971.JPG
+img1 - 2000 features, img2 - 2000 features
+img1 - 12301.16 ms, img2 - 12257.36 ms
+12 / 74  inliers/matched
+
+
+------------------------------------------------------------
+img1 - IMG_1968.JPG, img2 - IMG_1972.JPG
+img1 - 2000 features, img2 - 2000 features
+img1 - 12337.88 ms, img2 - 11506.96 ms
+6 / 24  inliers/matched
+
+
+------------------------------------------------------------
+img1 - IMG_1968.JPG, img2 - IMG_1973.JPG
+img1 - 2000 features, img2 - 2000 features
+img1 - 12310.71 ms, img2 - 12114.10 ms
+7 / 64  inliers/matched
+
+
+------------------------------------------------------------
+img1 - IMG_1968.JPG, img2 - IMG_1974.JPG
+img1 - 2000 features, img2 - 2000 features
+img1 - 12193.98 ms, img2 - 11866.62 ms
+8 / 47  inliers/matched

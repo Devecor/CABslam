@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>iStar</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <!-- Disable zooming capabilities on mobile devices -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <style type="text/css">
+      html {
+          height: 100%;
+      }
+      body {
+          padding: 0;
+          margin: 0;
+          overflow: hidden;
+          font-size: 100%;
+          line-height: 1.42857143;
+      }
+    </style>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="main.css" type="text/css" />
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/exif.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </head>
+
+<body>
+  <div class="container-fluid">
+    <div id="message">Message</div>
+    <div id="map">
+      <div class="house-wrapper">
+        <img id="house" src="house.jpg">
+        <img id="visitor" class="indicator" src="visitor.png">
+        <img id="anchor" class="indicator" src="anchor.png">
+        <img id="origin" class="indicator" src="cross.png">
+      </div>
+    </div>
+    <div class="controls">
+      <div class="row" style="margin: 0px;">
+        <label id="result">定位结果</br>定位误差</label>
+      </div>
+      <div class="row">
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="settingsbutton"> 设 置 </button></div>
+        <div class="col-xs-6 btn-group btn-group-lg">
+          <button class="btn btn-lg btn-default" type="button" title="放大" id="incbutton"> + </button>
+          <button class="btn btn-lg btn-default" type="button" title="缩小" id="decbutton"> - </button>
+          <a class="btn btn-lg btn-default" role="button" title="采集照片" href="photo.html"> @ </a>
+        </div>
+        <div class="col-xs-3"><button class="btn btn-lg btn-success pull-right" type="button" id="locatebutton"> 定 位 </button></div>
+      </div>
+    </div>
+    <!-- /.container -->
+  </div>
+
+  <div id="settings" class="page-container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        设置
+        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="buildinginput" class="col-xs-3 control-label">当前建筑</label>
+            <div class="col-xs-9">
+              <select class="form-control" id="buildinginput">
+                <option value="north-west-university/building-1">西北大学长安校区</option>
+                <option value="green-land-apartment/building-11">绿地世纪城</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="focalinput" class="col-xs-3 control-label">相机焦距</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="focalinput" value="4.2">
+                <span class="input-group-addon">毫米</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sizeinput" class="col-xs-3 control-label">底片大小</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="sizeinput" value="3.6,4.8">
+                <span class="input-group-addon">毫米</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="regioninput" class="col-xs-3 control-label">所在区域</label>
+            <div class="col-xs-9">
+              <select class="form-control" id="regioninput">
+                <option value="floor-1/r0">南大厅</option>
+                <option value="floor-1/r1">北大厅</option>
+              </select>
+              <!-- <input type="text" class="form-control" id="regioninput" value="0"> -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="modeinput" class="col-xs-3 control-label">定位模式</label>
+            <div class="col-xs-9">
+              <select class="form-control" id="modeinput">
+                <option value="normal">正常定位</option>
+                <option value="dig">充分定位（耗时较长）</option>
+              </select>
+              <!-- <input type="text" class="form-control" id="regioninput" value="0"> -->
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="spotainput" class="col-xs-3 control-label">拍摄角度</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="spotainput" value="0">
+                <span class="input-group-addon">度</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="spotxinput" class="col-xs-3 control-label">水平位置</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="spotxinput" value="0">
+                <span class="input-group-addon">厘米</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="spotyinput" class="col-xs-3 control-label">垂直位置</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="spotyinput" value="0">
+                <span class="input-group-addon">厘米</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+  <!-- /#advanced -->
+</body>
+</html>

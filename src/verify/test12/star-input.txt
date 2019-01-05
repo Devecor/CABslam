@@ -1,0 +1,5 @@
+images/star/s1-1 images/star/s1-1a
+images/star/s1-2 images/star/s1-2a
+images/star/s1-3 images/star/s1-3a
+images/star/s1-4 images/star/s1-4a
+images/star/s1-5 images/star/s1-5a

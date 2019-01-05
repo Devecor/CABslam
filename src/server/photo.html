@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>iStar</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <!-- Disable zooming capabilities on mobile devices -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <style type="text/css">
+      html {
+          height: 100%;
+      }
+      body {
+          padding: 0;
+          margin: 0;
+          overflow: hidden;
+          font-size: 100%;
+          line-height: 1.42857143;
+      }
+    </style>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="main.css" type="text/css" />
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/exif.js"></script>
+    <script type="text/javascript" src="photo.js"></script>
+  </head>
+
+<body>
+  <div class="container-fluid">
+    <div class="photo-container row">
+      <div id="selectbox" class="indicator"></div>
+    </div>
+    <div class="controls">
+      <div class="row" style="margin: 0px;">
+        <label id="output">参考照片采集<br>显示图片特征关键点</label>
+      </div>
+      <div class="row">
+        <div class="col-xs-3"><button class="btn btn-lg btn-success" type="button" id="take-photo"> 拍照 </button></div>
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="upload"> 上传 </button></div>
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="toggle-photo"> 切换 </button></div>
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="query-feature"> 特征 </button></div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="settingsbutton"> 参数 </button></div>
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="trainbutton"> 参考 </button></div>
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="matchbutton"> 匹配 </button></div>
+        <div class="col-xs-3"><button class="btn btn-lg btn-default" type="button" id="selectbutton"> 选择 </button></div>
+      </div>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+
+  <div id="settings" class="page-container">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        特征参数
+        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="nFeatures" class="col-xs-3 control-label">关键点</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="nFeatures" value="2000">
+                <span class="input-group-addon">个</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="mask" class="col-xs-3 control-label">选择区域</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="mask" value="" placeholder="x1,y1,x2,y2">
+                <span class="input-group-addon">像素</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="nAsiftFeatures" class="col-xs-3 control-label">Asift 关键点</label>
+            <div class="col-xs-9">
+              <div class="input-group">
+                <input type="text" class="form-control" id="nAsiftFeatures" value="800">
+                <span class="input-group-addon">个</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="tilt" class="col-xs-3 control-label">Asift Tilt</label>
+            <div class="col-xs-9">
+              <select class="form-control" id="tilt">
+                <option value="0">不使用 asift</option>
+                <option value="2">2</option>
+                <option selected value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-9">
+              <button class="btn btn-success btn-lg pull-right" type="button" id="query-feature1"> 特征 </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+  <!-- /#settings -->
+
+  <div id="matchpage" class="page-container">
+    <div class="panel panel-default">
+      <div class="panel-heading hidden">
+        匹配
+        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="panel-body">        
+        <form class="form-horizontal">
+          <div class="row">
+            <label for="trainimage" class="col-xs-3 control-label">参考图片</label>
+            <div class="col-xs-9">
+              <p id="trainimage" class="form-control-static" style="padding-top:0"></p>
+            </div>
+          </div>
+          <div class="row">
+            <label for="queryimage" class="col-xs-3 control-label">查询图片</label>
+            <div class="col-xs-9">
+              <p id="queryimage" class="form-control-static" style="padding-top:0"></p>
+            </div>
+          </div>
+          <div class="row">
+            <label for="train-suffix" class="col-xs-3 control-label">参考特征</label>
+            <div class="col-xs-9">
+              <select class="form-control" id="train-suffix">
+                <option value="orb">orb</option>
+                <option value="asift.orb" selected>asift+orb</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <label for="query-suffix" class="col-xs-3 control-label">查询特征</label>
+            <div class="col-xs-9">
+              <select class="form-control" id="query-suffix">
+                <option value="orb" selected>orb</option>
+                <option value="asift.orb">asift+orb</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 6px">
+            <div class="col-xs-12">
+              <button class="btn btn-success btn-lg pull-right" type="button" id="match-photo"> 匹配 </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="match-container">匹配结果</div>
+  </div>
+
+  <div id="selectpage" class="page-container">
+    <div class="well" style="margin-bottom: 0">选择图片
+      <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <nav aria-label="...">
+        <ul class="pager" style="margin: 0">
+          <li><button id="prev-page" class="btn btn-default btn-lg">前十张</button></li>
+          <li><button id="next-page" class="btn btn-default btn-lg">后十张</button></li>
+        </ul>
+      </nav>
+    </div>
+    <div id="thumbnails">
+    </div>
+  </div>  
+
+</body>
+</html>

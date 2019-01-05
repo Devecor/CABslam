@@ -1,0 +1,11 @@
+images/tp/t1-1 images/star/s1-1
+images/tp/t2-1 images/star/s1-1
+images/tp/t3-1 images/star/s1-1
+images/tp/t4-1 images/star/s1-1
+images/tp/t5-1 images/star/s1-1
+images/tp/t6-1 images/star/s1-1
+images/tp/t7-1 images/star/s1-1
+images/tp/t8-1 images/star/s1-1
+images/tp/t9-1 images/star/s1-1
+images/tp/t10-1 images/star/s1-1
+

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <title>Indoor Location</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0" /> -->
+    <!-- Disable zooming capabilities on mobile devices -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <style type="text/css">
+      html {
+          height: 100%;
+      }
+      body {
+          padding: 0;
+          margin: 0;
+          font-size: 100%;
+          line-height: 1.42857143;
+      }
+    </style>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/exif.js"></script>
+    <script type="text/javascript" src="locate.js"></script>
+  </head>
+
+<body>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">直播定位</a>
+        <div class="btn-group btn-lg-group pull-right">
+          <button type="button" class="btn btn-default navbar-btn" id="browse">浏览</button>
+          <button type="button" class="btn btn-default navbar-btn" id="play">播放</button>
+          <button type="button" class="btn btn-success navbar-btn" id="locate">定位</button>
+        </div>
+      </div>
+      <p class="navbar-text">定位结果</p>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div id="video-container">
+      <video id="video" class="center-block" width="320" height="240">
+        <p>Your browser doesn't support HTML5 video.</p>
+      </video>
+    </div>
+    <div>
+      <form class="form-horizontal">
+        <div class="form-group">
+          <label for="buildinginput" class="col-xs-3 control-label">当前建筑</label>
+          <div class="col-xs-9">
+            <select class="form-control" id="buildinginput">
+              <option value="north-west-university/building-1">西北大学物信教学楼</option>
+              <option value="green-land-apartment/building-11/room-1701" selected>绿地世纪城11号楼</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="focalinput" class="col-xs-3 control-label">相机焦距</label>
+          <div class="col-xs-9">
+            <div class="input-group">
+              <input type="text" class="form-control" id="focalinput" value="3.5">
+              <span class="input-group-addon">毫米</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="sizeinput" class="col-xs-3 control-label">底片大小</label>
+          <div class="col-xs-9">
+            <div class="input-group">
+              <input type="text" class="form-control" id="sizeinput" value="3.6,4.8">
+              <span class="input-group-addon">毫米</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="regioninput" class="col-xs-3 control-label">所在区域</label>
+          <div class="col-xs-9">
+            <select class="form-control" id="regioninput">
+              <option value="r0">客厅</option>
+              <option value="r1">卧室</option>
+              <option value="r2">书房</option>
+              <option value="r3">厨房</option>
+              <option value="r4">卫生间</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="modeinput" class="col-xs-3 control-label">定位模式</label>
+          <div class="col-xs-9">
+            <select class="form-control" id="modeinput">
+              <option value="normal">正常定位</option>
+              <option value="dig">充分定位（耗时较长）</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- /.container-fluid -->
+
+</body>
+</html>

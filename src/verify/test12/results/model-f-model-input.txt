@@ -1,0 +1,6 @@
+IMG              REFIMG           COUNT
+s1-1-orb         s1-1a-orb        2728      
+s1-4-orb         s1-4a-orb        2903      
+s1-2-orb         s1-2a-orb        2841      
+s1-3-orb         s1-3a-orb        3955      
+s1-5-orb         s1-5a-orb        1802      

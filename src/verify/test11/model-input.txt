@@ -1,0 +1,15 @@
+images/star/s1-1 images/star/s1-1a -10,0,0
+images/star/s1-2 images/star/s1-2a -10,0,0
+images/star/s1-3 images/star/s1-3a -10,0,0
+images/star/s1-4 images/star/s1-4a -10,0,0
+images/star/s1-5 images/star/s1-5a -10,0,0
+images/star/s2-1 images/star/s2-1a -10,0,0
+images/star/s2-2 images/star/s2-2a -10,0,0
+images/star/s2-3 images/star/s2-3a -10,0,0
+images/star/s2-4 images/star/s2-4a -10,0,0
+images/star/s2-5 images/star/s2-5a -10,0,0
+images/star/s3-1 images/star/s3-1a -10,0,0
+images/star/s3-2 images/star/s3-2a -10,0,0
+images/star/s3-3 images/star/s3-3a -10,0,0
+images/star/s3-4 images/star/s3-4a -10,0,0
+images/star/s3-5 images/star/s3-5a -10,0,0
