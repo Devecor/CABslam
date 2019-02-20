@@ -1,0 +1,357 @@
+# 精准定位实现方案
+
+本文详细说明了进行一次精准相机定位实验的过程和步骤，以及使用的方法。
+
+## 实验准备
+1. 粗定位结果： [gist_res.csv](../gist_res.csv)
+2. 实验相机内参(matlab Camera Calibrator标定):
+
+```python
+[3.1238    0    0
+ 0      3.1223  0
+ 1.4976 2.0223 0.001] * 1000
+```
+
+**注:** 实验相机偏移距离, 例如, 第二张图片拍摄地点在第一张图片的右侧5cm，向前 10cm, 那么 t = (-5, 0, -10)
+
+本文偏移距离: (10, 0, 0)
+
+3. Python工具： [numpy](), [ipython](), [pandas](), [opencv-python]()
+4. 2to3 --help
+本文使用:
+
+```python
+2to3 -w -n -o ../precise_postioning *.py
+```
+5. 可选工具:
+
+    * [libreOffice_draw](https://www.libreoffice.org/discover/draw/)
+    * [markdown参考手册](https://help.github.com/articles/basic-writing-and-formatting-syntax/)
+
+## 照片命名规范
+
+1. 参考点: **A-x-y-N.jpg**
+2. 测试点: **T-x-y-N.jpg**
+3. 偏移参考点: **B-x-y-N.jpg**
+
+## 获取orb关键点
+
+### 提取单张参考照片
+
+```bash
+    python３ ../check_feature.py filename --save --output './images' --feature orb --nFeatures 8000
+```
+
+### 提取单张测试照片
+
+```bash
+    python３ ../check_feature.py filename --save --output './images' --feature orb --nFeatures 2000
+```
+
+### 批处理命令
+
+```bash
+python3 query_features.py images/A/ & python3 query_features.py images/T/ -o 'features/orb2000' -n 2000
+```
+
+
+### 支持的参数列表
+
+```bash
+    python３ ../check_feature.py -h
+    usage: check_feature.py [-h] [--show] [--save] [--output OUTPUT] [--grid]
+                            [--mask MASK] [--asift] [--tilt TILT]
+                            [--feature {orb,sift,surf}] [--nFeatures n]
+                            [--pose POSE] [--camera CAMERA]
+                            FILENAME [FILENAME ...]
+```
+
+主要参数说明：
+
+* --show 显示图片
+* --save 保存结果
+* --output 关键点的保存路径，仅仅当指定 --save 才有效
+* --asift 使用 asift 取样
+* --feature 使用的特征名称
+* --nFeatures 最大的特征数目
+
+**注:**
+
+* 特征提取: [check_feature.py](./check_feature.py)
+
+* 批处理: [query_features.py](./query_features.py)
+
+## 匹配参考照片
+
+### 单独匹配两张照片的命令
+
+```bash
+    python3 check_match.py --kpfile1=features/orb8000/A_3_3_1-orb.npz --kpfile2=features/orb8000/B_3_3_1-orb.npz --homography --save --output matches images/A/A_3_3_1.jpg images/A/B_3_3_1.jpg
+```
+
+使用方法
+
+```
+python3 check_match.py -h
+usage: check_match.py [-h] [--kpfile1 KPFILE1] [--kpfile2 KPFILE2]
+                      [--path PATH] [--suffix SUFFIX] [--kdtree]
+                      [--homography] [--fundamental] [--show] [--save]
+                      [--output OUTPUT]
+                      FILENAME FILENAME
+
+匹配两个图片的关键点
+
+positional arguments:
+  FILENAME           训练图片，查询图片
+
+optional arguments:
+  -h, --help         show this help message and exit
+  --kpfile1 KPFILE1  训练图片关键点文件
+  --kpfile2 KPFILE2  查询图片关键点文件
+  --path PATH        关键点文件的路径
+  --suffix SUFFIX    关键点文件的后缀名称
+  --kdtree           使用 FLANN_INDEX_KDTREE 进行匹配
+  --homography       是否使用 homography 过滤匹配结果
+  --fundamental      是否使用 fundamental 过滤匹配结果
+  --show             在窗口中显示匹配结果
+  --save             是否保存匹配结果
+  --output OUTPUT    输出文件的路径
+```
+
+### 批处理命令
+
+```bash
+python3 matches.py -kpdir features/orb8000 -imgdir images/A -o matches/A --filter homography
+```
+
+**注:**
+
+* 特征匹配: [check_match.py](./check_match.py)
+
+* 批处理: [matches.py](./matches.py)
+
+## 匹配测试照片
+
+输入文件 **[gist_res.csv](../gist_res.csv)**
+
+### 批处理命令
+
+```bash
+python3 matches.py -kpdir features -imgdir images -o matches/T --filter homography --ifile ../gist_res.csv
+```
+
+**注:**
+
+* --iflie参数必须给定
+
+* 批处理: [matches.py](./matches.py)
+
+##　生成关键点的三维坐标库
+
+了解相机定位基础，相机内参，照片焦距，底片大小
+
+[针孔相机模型](https://docs.opencv.org/3.2.0/d9/d0c/group__calib3d.html)
+
+如何查看照片焦距，通过 jpg 文件 EXIF 信息，直接在手机上查看照片的详细信息，使用等效焦距的值
+
+常见手机的底片大小，CCD-CMOS
+
+```
+型号    宽 高(mm)
+1/3    4.8 3.6
+1/2.5  5.8 4.3
+1/1.8  7.2 5.3
+2/3    8.8 6.6
+```
+
+1. **如何简单的测量手机底片的大小获得内参**
+
+  * 打开手机相机
+  * 距离某一个已知宽度为 w 的物体
+  * 前后移动手机，使宽度为 w 的物体正好等于照片的宽度，记录相机和物体的距离 d
+  * 拍下照片，查看照片详细信息，得到等效焦距的值 f (mm)
+  * 相机底片较短的边长 = f * w / d (mm)
+  * 相机内参 **focals** = 焦距 / 底片大小, 例如: focals = 3.1238,3.1223
+
+2. **更加简单的办法**
+
+  * opencv/samples/python/calibrate.py [**但成功率不高**]
+  * matlab Camera Calibrator [推荐使用]
+
+### 单张照片的建模命令
+
+命令1[大牛命令]:
+```bash
+python3 make_model.py --size=3000,4000 --focals=1.04127,0.780575 \
+--homography --refpos=10,0,0 \
+    features/orb8000/s1-1-orb.npz features/orb8000/s1-1a-orb.npz
+```
+
+命令2[本文使用]:
+```bash
+python3 make_model.py --size 3000,4000 --homography --refpos 10,0,0 --focals=1.04127,0.780575 -K 3123.8,3122.3,1497.6,2022.3 --show features/orb8000/A_3_3_1-orb.npz features/orb8000/B_3_3_1-orb.npz
+```
+
+使用说明
+```
+python3 make_model.py -h
+usage: make_model.py [-h] [--pose POSE] [--refpos REFPOS] --size SIZE [--show]
+                     [--save] [--myself] [--output path] [--homography]
+                     [--fundamental] [--focals fx,fy] [--maximum D]
+                     [-K fx,fy,cx,cy]
+                     IMAGE REFIMAGE
+
+生成图片的三维特征点文件
+
+positional arguments:
+  IMAGE                 图片对应的特征文件
+  REFIMAGE              参考图片对应的特征文件
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --pose POSE           图片的位置坐标 x,y,z,a
+  --refpos REFPOS       参考图片拍摄位置相对偏移量 dx,dy,dz
+  --size SIZE           图片大小 w,h
+  --show                打印获取到的关键点三维信息
+  --save                保存三维关键点数据
+  --myself              使用自己的算法计算三维坐标
+  --output path         输出文件的路径
+  --homography          使用 Homography 进行过滤
+  --fundamental         使用 fundamental 过滤匹配结果
+  --focals fx,fy        相机内参（fx,fy)
+  --maximum D           最远的三维关键点距离，单位是厘米
+  -K fx,fy,cx,cy, --intrinsicMatrix fx,fy,cx,cy
+                        内参矩阵 若+指定了此参数 --focals将失效
+```
+
+### 批处理命令
+
+```bash
+python3 make_3dlib.py -imgdir images/A -kpdir features/orb8000 --output models
+```
+
+**查看每一组照片生成的三维关键点个数，如果数目为 0，那么表示拍摄的照片不合格**
+
+```
+使用方法:
+python3 make_3dlib.py -h
+usage: make_3dlib.py [-h] [-imgdir path] [-kpdir path] [-o path]
+
+批量生成三维坐标库
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -imgdir path, --images_dir path
+                        参考照片目录
+  -kpdir path, --key_points_dir path
+                        特征文件目录
+  -o path, --output path
+                        输出路径
+```
+
+## 查询定位
+
+### 单张查询[大牛命令]:
+
+```bash
+python query_location.py --size=3000,4000 --focals=1.04127,0.780575 --homography --save --output results --debug \
+features/orb2000/T_2_10_1-orb models/s1-1 models/s1-2 models/s1-5
+```
+
+```
+使用说明
+python3 query_location.py -h
+usage: query_location.py [-h] [--homography] [--fundamental] [--save]
+                         [--reject REJECT] [--accept ACCEPT] [--output OUTPUT]
+                         [--focals FOCALS] [--size SIZE]
+                         [--solve {ITERATIVE,P3P,AP3P,EPNP}] [--debug]
+                         QUERY IMAGES [IMAGES ...]
+
+根据参考图片，定位查询图片的位置和朝向
+
+positional arguments:
+  QUERY                 查询图片
+  IMAGES                参考图片模型文件
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --homography          是否使用 homography 过滤匹配结果
+  --fundamental         是否使用 fundamental 过滤匹配结果
+  --save                是否保存定位结果
+  --reject REJECT       匹配失败阀值，小于该值认为是失败
+  --accept ACCEPT       匹配成功阀值，大于该值认为匹配成功
+  --output OUTPUT       输出文件的路径
+  --focals FOCALS       相机内参（fx,fy)
+  --size SIZE           查询照片大小（w,h)
+  --solve {ITERATIVE,P3P,AP3P,EPNP}
+                        选择定位算法，默认是 P3P
+  --debug               输出定位结果json文件
+```
+
+### 批处理命令
+
+```bash
+python3 query_results.py features/orb2000 models -o results
+```
+
+使用方法：
+
+```bash
+python3 query_results.py -h
+usage: query_results.py [-h] [-o Path] [--size W,L] [--focals fx,fy]
+                        [--filter {homography,}]
+                        query imgs
+
+查询测试照片定位结果
+
+positional arguments:
+  query                 测试照片特征存储目录，默认为features/orb2000
+  imgs                  坐标库目录
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o Path, --output Path
+                        指定输出目录，若不存在，将被创建
+  --size W,L            图像像素尺寸
+  --focals fx,fy        相机内参
+  --filter {homography,}
+                        过滤器
+```
+
+## 汇总定位结果计算误差
+
+### 结果汇总
+
+```bash
+python3 analysis.py
+```
+于当前目录生成'orb_res.txt'和'orb_res.csv'两个文件
+
+### 坐标系转换
+
+```bash
+gawk -f transform-location.awk orb_res.txt > location-results.txt
+```
+
+### 计算误差
+
+```
+gawk -f location-errors.awk results/location-results.txt > location-errors.txt
+```
+
+## 分析与讨论
+
+### 先谈点感悟
+
+1. _程序　＝　数据结构　＋　算法_, 问，**数据结构和算法谁更重要**？
+本文倾向于数据结构更重要， 知道数据结构还可以查算法或者设计算法, 不知道现有程序依赖的数据结构, 胡乱调参无异于黑暗中赶路, 吃够了走夜路的苦, 这是本文进行代码重构的最主要原因
+2. **代码复制是恶魔**，相似代码要么封装成函数重用，要么重新手撸一遍
+后期debug往往就因为复制过来的代码中一两个参数甚至字符忘记改, 而浪费半天时间排查错误
+3. **掌握一门语言就是能熟练使用该语言的内建数据结构**
+顺序分支循环所有语言的共性, 唯有内建的数据结构是不一样的, 任何复杂的结构或这算法必须以这些基本内建数据结构为基石, 比如c的指针、数组、和结构体, java的容器, python的列表、字典.
+4. **程序执行时间** = **cpu执行时间** ＋ **io时间** ＋ **睡眠或等待时间**
+io时间占用程序执行的绝大部分时间, 经本测试, io时间是cpu执行时间的1000倍, 差了整整3个数量级, 因此要保证代码的执行效率, 要严格控制io次数.
+5. **数据就像鸡蛋**
+不要把鸡蛋放在一个篮子里, 不要把篮子都放在一辆车里, 不要把车都跑在一条车道上!
+
+(**注:** 限于本文作者能力, 理解可能不深刻,勿喷！ 但请多指正, 感激不尽！)

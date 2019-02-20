@@ -264,7 +264,7 @@ awk 语言简介，参考脚本 [make-test-star.awk](../src/verify/test8/make-te
     bash ../test5/build-model.sh model-input.txt "models" features/orb-8000 f
 ```
 
-查看每一组照片生成的三维关键点个数，如果数目为 0，那么表示拍摄的照片不合格
+
 
 ```
     cat results/model-f-model-input.txt
